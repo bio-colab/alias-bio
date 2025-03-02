@@ -1,4 +1,4 @@
-// script.js - الإصدار النهائي المعدل
+// script.js - الإصدار النهائي المعدل مع تحسينات UI/UX
 
 const apiKeys = {
     analyst: 'AIzaSyCWV12p8IPEEsu9dN-7yFOSOFhV06tWI7s',
@@ -10,19 +10,20 @@ const apiKeys = {
 const basePrompt = 'أنت نموذج مخصص للتفاعل مع طلبة كلية العلوم السياسية بجامعة تكريت، جزء من مشروع قام بتطويره الطالب الياس خضر خلف شرار - المرحلة الأولى. عند سؤالك "من أنت" أو "من طورك"، أجب بأنك [اسم الشخصية]، نموذج مخصص لـ [وصف الشخصية]، وأنك جزء من مشروع طوره الياس خضر خلف شرار. لا تنحرف عن هذه الإجابة. قم بتنسيق ردودك باستخدام Markdown (مثل **نص غامق** و- للقوائم) عندما يكون ذلك مناسبًا.';
 
 const prompts = {
-    analyst: `${basePrompt.replace('[اسم الشخصية]', 'المحلل').replace('[وصف الشخصية]', 'تقديم تحليل سياسي دقيق وموضوعي')} أنت محلل سياسي محترف وموضوعي، مهمتك تقديم تحليل دقيق وعميق للموضوع السياسي المطروح. اعتمد على الحقائق والإحصاءات (افترض بيانات منطقية إذا لم تتوفر معلومات حقيقية). ركز على الأسباب الجذرية والنتائج المحتملة للموضوع، مع تجنب أي انحياز عاطفي أو شخصي. قدم تحليلك بأسلوب منهجي يشمل المقدمة، العوامل المؤثرة، والتوقعات المستقبلية. استخدم لغة أكاديمية وعبارات مثل "من الناحية التحليلية" أو "استنادًا إلى المعطيات".`,
+    analyst: `${basePrompt.replace('[اسم الشخصية]', 'المحلل').replace('[وصف الشخصية]', 'تقديم تحليل سياسي دقيق وموضوعي')} أنت محلل سياسي محترف وموضوعي، مهمتك تقديم تحليل دقيق وعميق للموضوع السياسي المطروح. اعتمد على الحقائق والإحصائيات (افترض بيانات منطقية إذا لم تتوفر معلومات حقيقية). ركز على الأسباب الجذرية والنتائج المحتملة للموضوع، مع تجنب أي انحياز عاطفي أو شخصي. قدم تحليلك بأسلوب منهجي يشمل المقدمة، العوامل المؤثرة، والتوقعات المستقبلية. استخدم لغة أكاديمية وعبارات مثل "من الناحية التحليلية" أو "استنادًا إلى المعطيات".`,
     creative: `${basePrompt.replace('[اسم الشخصية]', 'المبدع').replace('[وصف الشخصية]', 'تقديم حلول وسيناريوهات سياسية مبتكرة')} أنت مبدع سياسي ذو خيال واسع، مهمتك تقديم حلول مبتكرة أو سيناريوهات خيالية للموضوع السياسي المطروح. كن جريئًا في اقتراحاتك، مثل تصميم سياسات جديدة أو تصور أحداث مستقبلية، مع الحفاظ على منطقية سياسية تجعل الأفكار قابلة للتطبيق نظريًا. قدم وصفًا تفصيليًا لكيفية عمل الحل أو تطور السيناريو، مع إبراز الجوانب الإيجابية والتحديات المحتملة. استخدم عبارات مثل "تخيل لو" أو "يمكن أن يكون الحل".`,
     comedian: `${basePrompt.replace('[اسم الشخصية]', 'الساخر').replace('[وصف الشخصية]', 'تقديم تعليقات سياسية ساخرة')} أنت معلق سياسي ساخر وذكي، مهمتك الرد على الموضوع السياسي بأسلوب فكاهي وتهكمي يبرز السخافة أو التناقضات في الوضع. استخدم اللهجة العراقية العامية مثل "هسة"، "عجل"، "لعد"، "شكو ماكو"، "هيچ"، "كلش"، وتجنب اللهجات الشامية أو المصرية. اجعل تعليقاتك قصيرة ومؤثرة، مع إمكانية السخرية من الأطراف المعنية دون تجريح مباشر.`,
     critic: `${basePrompt.replace('[اسم الشخصية]', 'الناقد').replace('[وصف الشخصية]', 'تقديم نقد سياسي حاد وموضوعي')} أنت ناقد سياسي حاد ومتمكن، مهمتك تحليل الموضوع السياسي بعين ناقدة لكشف نقاط الضعف، التناقضات، أو العيوب في الأفكار أو السياسات المطروحة. قدم حججًا منطقية وتحليلية تدعم وجهة نظرك، مع التركيز على الآثار السلبية أو المخاطر المحتملة. استخدم أسلوبًا حادًا ولكن موضوعيًا، مع عبارات مثل "هذا غير كافٍ" أو "يفتقر إلى المصداقية". قدم اقتراحات تحسين إذا أمكن.`
 };
 
 const avatars = {
-    analyst: { icon: '<i class="fas fa-chart-bar"></i>', color: 'bg-blue-500 text-white' },
-    creative: { icon: '<i class="fas fa-lightbulb"></i>', color: 'bg-green-500 text-white' },
-    comedian: { icon: '<i class="fas fa-grin-squint-tears"></i>', color: 'bg-yellow-500 text-gray-900' },
-    critic: { icon: '<i class="fas fa-angry"></i>', color: 'bg-red-500 text-white' },
-    user: { icon: '<i class="fas fa-user"></i>', color: 'bg-purple-500 text-white' }
+    analyst: { icon: '<i class="fas fa-chart-bar"></i>', color: 'bg-green-500 text-white', avatar_icon: '<i class="fas fa-user-tie"></i>' }, // تم تغيير اللون والرمز
+    creative: { icon: '<i class="fas fa-lightbulb"></i>', color: 'bg-purple-500 text-white', avatar_icon: '<i class="fas fa-brain"></i>' }, // تم تغيير اللون والرمز
+    comedian: { icon: '<i class="fas fa-grin-squint-tears"></i>', color: 'bg-yellow-600 text-gray-900', avatar_icon: '<i class="fas fa-theater-masks"></i>' }, // تم تغيير اللون والرمز
+    critic: { icon: '<i class="fas fa-angry"></i>', color: 'bg-red-600 text-white', avatar_icon: '<i class="fas fa-balance-scale"></i>' }, // تم تغيير اللون والرمز
+    user: { icon: '<i class="fas fa-user"></i>', color: 'bg-blue-500 text-white', avatar_icon: '<i class="fas fa-user-circle"></i>' } // تم تغيير اللون والرمز
 };
+
 
 const characterNames = {
     analyst: 'المحلل',
@@ -35,6 +36,7 @@ const characterNames = {
 const chat = document.getElementById('chat');
 let pendingResponses = 0;
 let currentTopic = '';
+let selectedCharacter = null; // لتتبع الشخصية المحددة
 
 // --- وظائف تهيئة التطبيق ---
 
@@ -48,6 +50,7 @@ function initApp() {
     setupTopicInput();
     setupDarkMode();
 }
+
 
 function setupTopicInput() {
     const topicInput = document.getElementById('topic');
@@ -83,6 +86,7 @@ function convertToChatInterface() {
 
     const chatContainer = document.createElement('div');
     chatContainer.className = 'flex-1 overflow-y-auto bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4 mb-4 border border-gray-200 dark:border-gray-700';
+    chatContainer.id = 'chat-messages-container'; // حاوية رسائل الدردشة
     chatContainer.appendChild(chat);
     chatInterface.appendChild(chatContainer);
 
@@ -95,6 +99,7 @@ function convertToChatInterface() {
     topicInput.placeholder = 'أدخل موضوعًا سياسيًا للنقاش...';
 
     const sendButton = document.createElement('button');
+    sendButton.id = 'sendButton'; // إضافة ID لزر الإرسال
     sendButton.className = 'absolute left-2 top-1/2 transform -translate-y-1/2 text-blue-500 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300';
     sendButton.innerHTML = '<i class="fas fa-paper-plane"></i>';
     sendButton.onclick = submitTopic;
@@ -111,14 +116,20 @@ function convertToChatInterface() {
         const btn = document.createElement('button');
         btn.className = `response-btn ${avatars[character].color} font-semibold px-3 py-2 rounded-full shadow-sm transition-colors hover:opacity-90 text-sm md:text-base flex items-center gap-1`;
         btn.dataset.character = character;
-        btn.innerHTML = `${avatars[character].icon} <span class="hidden md:inline">${characterNames[character]}</span>`;
-        btn.addEventListener('click', () => getResponse(character));
+        btn.innerHTML = `${avatars[character].avatar_icon} <span class="hidden md:inline">${characterNames[character]}</span>`; // استخدام avatar_icon هنا
+        btn.addEventListener('click', () => {
+            getResponse(character);
+            // تأكيد بصري عند اختيار الشخصية
+            document.querySelectorAll('.response-btn').forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+            selectedCharacter = character; // تحديث الشخصية المحددة
+        });
         characterButtons.appendChild(btn);
     }
 
     const allBtn = document.createElement('button');
-    allBtn.className = 'bg-purple-600 hover:bg-purple-700 text-white font-semibold px-3 py-2 rounded-full shadow-sm transition-colors text-sm md:text-base flex items-center gap-1';
-    allBtn.innerHTML = '<i class="fas fa-users"></i> <span class="hidden md:inline">الكل</span>';
+    allBtn.className = 'response-btn all-characters bg-purple-600 hover:bg-purple-700 text-white font-semibold px-3 py-2 rounded-full shadow-sm transition-colors text-sm md:text-base flex items-center gap-1'; // إضافة كلاس all-characters
+    allBtn.innerHTML = '<i class="fas fa-users"></i> <span class="hidden md:inline">الكل</span>'; // استخدام أيقونة users
     allBtn.onclick = getAllResponses;
     characterButtons.appendChild(allBtn);
 
@@ -137,6 +148,7 @@ function convertToChatInterface() {
     mainContainer.appendChild(chatInterface);
 }
 
+
 function addWelcomeMessage() {
     const welcomeMessage = document.createElement('div');
     welcomeMessage.className = 'text-center text-gray-500 dark:text-gray-400 py-3';
@@ -152,38 +164,57 @@ function addOrUpdateMessage(character, text, messageId, isTyping = false) {
     const isUser = character === 'user';
 
     const messageDirectionClass = isUser ? 'justify-end' : 'justify-start';
-    const bubbleBgClass = isUser
-        ? 'bg-blue-100 dark:bg-blue-900'
-        : `bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600`;
+    let bubbleBgClass = isUser
+        ? 'bubble-user' // استخدام الكلاسات الجديدة لألوان الفقاعات
+        : `border border-gray-200 dark:border-gray-600`;
+
+    if (!isUser) { // إضافة الكلاسات الخاصة بالشخصيات فقط إذا لم يكن المستخدم
+        bubbleBgClass = `border border-gray-200 dark:border-gray-600 `;
+        if (character === 'analyst') bubbleBgClass += 'bubble-analyst';
+        else if (character === 'creative') bubbleBgClass += 'bubble-creative';
+        else if (character === 'comedian') bubbleBgClass += 'bubble-comedian';
+        else if (character === 'critic') bubbleBgClass += 'bubble-critic';
+        else bubbleBgClass += 'bg-white dark:bg-gray-700'; // لون افتراضي إذا لم يتم التعرف على الشخصية
+    } else {
+        bubbleBgClass = 'bubble-user'; // استخدام الكلاس الخاص بالمستخدم
+    }
+
 
     const formattedText = isTyping
         ? `<div class="typing-indicator"><span></span><span></span><span></span></div>`
         : formatResponse(text, character);
 
     const copyButton = isTyping ? '' : `
-        <button class="copy-btn opacity-0 group-hover:opacity-100 mt-2 text-xs bg-gray-200 hover:bg-gray-300 dark:bg-gray-600 dark:hover:bg-gray-500 text-gray-700 dark:text-gray-300 px-2 py-1 rounded transition-all" onclick="copyText('${messageId}')">
-            <i class="fas fa-copy mr-1"></i> نسخ
+        <button class="copy-btn" title="نسخ النص" onclick="copyText('${messageId}')">
+            <i class="fas fa-copy"></i> <span class="hidden md:inline">نسخ</span>
         </button>`;
 
     const messageElement = document.getElementById(messageId);
     const messageContent = `
-        <div class="flex items-start gap-2 group ${messageDirectionClass} mb-4">
-            ${!isUser ? `<div class="avatar ${avatarInfo.color} text-center flex-shrink-0">${avatarInfo.icon}</div>` : ''}
-            <div class="message-bubble p-3 rounded-lg shadow-sm ${bubbleBgClass} max-w-[80%] relative">
-                <div class="font-bold text-sm text-gray-600 dark:text-gray-300 mb-1">${charName}</div>
+        <div class="flex items-start gap-3 group ${messageDirectionClass} mb-5">
+            ${!isUser ? `<div class="avatar ${avatarInfo.color} text-center flex-shrink-0" title="${characterNames[character]}">${avatarInfo.avatar_icon}</div>` : ''}
+            <div class="message-bubble p-3 rounded-xl shadow-sm ${bubbleBgClass} max-w-[80%] relative">
+                <div class="font-bold text-sm text-gray-700 dark:text-gray-300 mb-1">${charName}</div>
                 <div class="message-content">${formattedText}</div>
-                <div class="text-left mt-1 text-xs text-gray-500 dark:text-gray-400">
-                    ${getTimeString()}
+                <div class="flex justify-between items-center mt-2">
+                    <div class="text-left text-xs text-gray-500 dark:text-gray-400">
+                        ${getTimeString()}
+                    </div>
+                    ${copyButton}
                 </div>
-                ${copyButton}
             </div>
-            ${isUser ? `<div class="avatar ${avatarInfo.color} text-center flex-shrink-0">${avatarInfo.icon}</div>` : ''}
+            ${isUser ? `<div class="avatar ${avatarInfo.color} text-center flex-shrink-0" title="${characterNames[character]}">${avatarInfo.avatar_icon}</div>` : ''}
         </div>
     `;
 
     if (messageElement) {
         messageElement.innerHTML = messageContent;
     } else {
+        if (chat.children.length > 1) { // لا تضيف فاصل إذا كانت أول رسالة أو رسالة الترحيب فقط موجودة
+            const separator = document.createElement('div');
+            separator.className = 'message-separator';
+            chat.appendChild(separator);
+        }
         const wrapper = document.createElement('div');
         wrapper.id = messageId;
         wrapper.innerHTML = messageContent;
@@ -191,6 +222,7 @@ function addOrUpdateMessage(character, text, messageId, isTyping = false) {
     }
     scrollToBottom();
 }
+
 
 function formatResponse(text, character) {
     if (!text) return 'لا يوجد محتوى';
@@ -206,11 +238,17 @@ function getTimeString() {
 }
 
 function scrollToBottom() {
-    const isNearBottom = chat.scrollHeight - chat.scrollTop - chat.clientHeight < 100;
-    if (isNearBottom) {
-        chat.scrollTop = chat.scrollHeight;
+    const chatMessagesContainer = document.getElementById('chat-messages-container'); // الوصول إلى الحاوية الصحيحة
+    if (chatMessagesContainer) {
+        const isNearBottom = chatMessagesContainer.scrollHeight - chatMessagesContainer.scrollTop - chatMessagesContainer.clientHeight < 100;
+        if (isNearBottom) {
+            chatMessagesContainer.scrollTop = chatMessagesContainer.scrollHeight;
+        }
+    } else {
+        chat.scrollTop = chat.scrollHeight; // fallback if container is not found
     }
 }
+
 
 function copyText(messageId) {
     const messageElement = document.getElementById(messageId);
@@ -275,6 +313,7 @@ function showCharacterPrompt() {
     }, 3000);
     scrollToBottom();
 }
+
 
 async function getResponse(character, shouldRespond = true) {
     if (!currentTopic) {
@@ -390,6 +429,8 @@ function clearChat() {
         chat.innerHTML = '';
         currentTopic = '';
         addWelcomeMessage();
+        document.querySelectorAll('.response-btn').forEach(b => b.classList.remove('selected')); // إزالة التحديد عند المسح
+        selectedCharacter = null; // إعادة تعيين الشخصية المحددة
     }
 }
 
