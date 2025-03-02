@@ -56,22 +56,27 @@
         .bubble-user {
             background-color: #e0f7fa;
             border-right: 4px solid #4fc3f7;
+            @apply dark:bg-blue-800; /* تعديل لون الفقاعة في الوضع الداكن */
         }
         .bubble-analyst {
             background-color: #e8f5e9;
             border-right: 4px solid #66bb6a;
+            @apply dark:bg-green-800; /* تعديل لون الفقاعة في الوضع الداكن */
         }
         .bubble-creative {
             background-color: #f3e5f5;
             border-right: 4px solid #ab47bc;
+            @apply dark:bg-purple-800; /* تعديل لون الفقاعة في الوضع الداكن */
         }
         .bubble-comedian {
             background-color: #fff8e1;
             border-right: 4px solid #ffd54f;
+            @apply dark:bg-yellow-700; /* تعديل لون الفقاعة في الوضع الداكن */
         }
         .bubble-critic {
             background-color: #ffebee;
             border-right: 4px solid #ef5350;
+            @apply dark:bg-red-800; /* تعديل لون الفقاعة في الوضع الداكن */
         }
 
         /* تحسين ظهور الفقاعات وإضافة تأثيرات الانتقال */
@@ -364,6 +369,15 @@
             position: absolute;
             visibility: hidden;
         }
+
+        /* تحسين التباين في الوضع الداكن */
+        .message-content {
+            color: #2D3748; /* لون النص في الوضع العادي */
+        }
+        .dark .message-content {
+            color: #E2E8F0; /* لون النص في الوضع الداكن - أفتح للحصول على تباين أفضل */
+        }
+
     </style>
 </head>
 <body class="bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white font-tajawal">
@@ -444,11 +458,10 @@
         </footer>
     </div>
 
-
     <!-- لوحة المساعدة -->
     <div id="help-panel" class="help-panel">
         <div class="flex justify-between items-center mb-4">
-            <h3 class="text-lg font-bold">كيف تستخدم التطبيق</h3>
+            <h3 class="text-lg font-bold">دليل المستخدم</h3>
             <button id="close-help" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300">
                 <i class="fas fa-times"></i>
             </button>
@@ -457,43 +470,33 @@
             <div class="bg-blue-50 dark:bg-blue-900/30 p-4 rounded-lg">
                 <h4 class="font-bold mb-2 text-blue-700 dark:text-blue-300">كيفية البدء</h4>
                 <ol class="list-decimal list-inside space-y-2 text-gray-700 dark:text-gray-300">
-                    <li>أدخل موضوعاً سياسياً في حقل النص</li>
-                    <li>اختر شخصية للرد أو انقر على "الكل" للحصول على كل الآراء</li>
+                    <li>أدخل موضوعاً سياسياً في حقل النص أعلى مربع الدردشة.</li>
+                    <li>اختر شخصية واحدة من الشخصيات المتاحة بالأسفل للرد على موضوعك.</li>
+                    <li>أو انقر على زر "الكل" للحصول على ردود من جميع الشخصيات في وقت واحد.</li>
                 </ol>
             </div>
 
             <div class="bg-green-50 dark:bg-green-900/30 p-4 rounded-lg">
                 <h4 class="font-bold mb-2 text-green-700 dark:text-green-300">الشخصيات</h4>
                 <ul class="list-disc list-inside space-y-2 text-gray-700 dark:text-gray-300">
-                    <li><strong class="text-green-600 dark:text-green-400">المحلل:</strong> يقدم تحليل موضوعي وعميق</li>
-                    <li><strong class="text-purple-600 dark:text-purple-400">المبدع:</strong> يطرح أفكار مبتكرة وحلول إبداعية</li>
-                    <li><strong class="text-yellow-600 dark:text-yellow-400">الساخر:</strong> يعلق بأسلوب ساخر وفكاهي</li>
-                    <li><strong class="text-red-600 dark:text-red-400">الناقد:</strong> يقدم نقداً بناءً ويكشف نقاط الضعف</li>
+                    <li><strong class="text-green-600 dark:text-green-400">المحلل:</strong> يقدم تحليل موضوعي وعميق للقضايا السياسية.</li>
+                    <li><strong class="text-purple-600 dark:text-purple-400">المبدع:</strong> يطرح أفكاراً مبتكرة وحلولاً إبداعية للمشاكل السياسية.</li>
+                    <li><strong class="text-yellow-600 dark:text-yellow-400">الساخر:</strong> يعلق بأسلوب ساخر وفكاهي على الأحداث السياسية.</li>
+                    <li><strong class="text-red-600 dark:text-red-400">الناقد:</strong> يقدم نقداً بناءً ويكشف نقاط الضعف في الآراء والسياسات المطروحة.</li>
                 </ul>
             </div>
 
             <div class="bg-purple-50 dark:bg-purple-900/30 p-4 rounded-lg">
-                <h4 class="font-bold mb-2 text-purple-700 dark:text-purple-300">المميزات</h4>
+                <h4 class="font-bold mb-2 text-purple-700 dark:text-purple-300">المميزات الأساسية</h4>
                 <ul class="list-disc list-inside space-y-2 text-gray-700 dark:text-gray-300">
-                    <li>تصدير المحادثة كملف PDF</li>
-                    <li>اقتراحات لمواضيع سياسية</li>
-                    <li>نسخ الردود بنقرة واحدة</li>
-                    <li>الوضع الداكن لتقليل إجهاد العين</li>
-                </ul>
-            </div>
-
-            <div class="bg-yellow-50 dark:bg-yellow-900/30 p-4 rounded-lg">
-                <h4 class="font-bold mb-2 text-yellow-700 dark:text-yellow-300">اختصارات لوحة المفاتيح</h4>
-                <ul class="list-disc list-inside space-y-2 text-gray-700 dark:text-gray-300">
-                    <li><kbd class="px-2 py-1 bg-gray-200 dark:bg-gray-700 rounded">Alt + S</kbd> إرسال الموضوع</li>
-                    <li><kbd class="px-2 py-1 bg-gray-200 dark:bg-gray-700 rounded">Alt + A</kbd> طلب الرد من جميع الشخصيات</li>
-                    <li><kbd class="px-2 py-1 bg-gray-200 dark:bg-gray-700 rounded">Alt + T</kbd> تبديل الوضع الداكن</li>
-                    <li><kbd class="px-2 py-1 bg-gray-200 dark:bg-gray-700 rounded">Esc</kbd> إغلاق النوافذ المنبثقة</li>
+                    <li><strong>تصدير المحادثة:</strong> يمكنك تصدير المحادثة الحالية بالكامل إلى ملف PDF.</li>
+                    <li><strong>مقترحات للمواضيع:</strong> يقترح النظام مواضيع سياسية متنوعة لبدء الحوار.</li>
+                    <li><strong>نسخ الردود:</strong> يمكنك بسهولة نسخ أي رد بنقرة واحدة لغرض المشاركة أو الحفظ.</li>
+                    <li><strong>الوضع الداكن:</strong> يوفر التطبيق وضعاً داكناً مريحاً للعين في ظروف الإضاءة المنخفضة.</li>
                 </ul>
             </div>
         </div>
     </div>
-
 
     <!-- تضمين ملف JavaScript -->
     <script src="script.js"></script>
