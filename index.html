@@ -8,66 +8,162 @@
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/showdown/dist/showdown.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
     <style>
+        /* --- التحسينات المرئية العامة --- */
+        /* 1. تنوع ألوان الفقاعات */
+        .bubble-user { background-color: #e0f7fa; dark:bg-blue-900; } /* درجة أفتح للمستخدم */
+        .bubble-analyst { background-color: #f0f4c3; dark:bg-green-800; } /* درجة للأفهم للمحلل */
+        .bubble-creative { background-color: #e8f5e9; dark:bg-purple-800; } /* درجة افتح للمبدع */
+        .bubble-comedian { background-color: #ffe0b2; dark:bg-yellow-700; } /* درجة افتح للساخر */
+        .bubble-critic { background-color: #ffcdd2; dark:bg-red-800; } /* درجة افتح للناقد */
+
         .message-bubble {
             word-wrap: break-word;
             overflow-wrap: break-word;
             white-space: pre-wrap;
             max-width: 80%;
             min-width: 20%;
-            padding: 0.75rem; /* تقليل الحشوة لتناسب حجم الرسالة */
+            padding: 0.75rem;
             overflow: auto;
-            max-height: 300px; /* السماح بالتمرير إذا كان النص طويلًا */
+            max-height: 300px;
+            border-radius: 1.25rem; /* زيادة انحناء الزوايا */
+            transition: background-color 0.3s ease; /* انتقال سلس لتغيير لون الخلفية */
         }
-        .typing-indicator span {
-            display: inline-block;
-            width: 6px;
-            height: 6px;
-            background-color: #6b7280;
-            border-radius: 50%;
-            margin-right: 2px;
-            animation: bounce 1s infinite;
-        }
-        .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
-        .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-5px); }
-        }
+
+        /* 2. تخصيص الأفاتار بشكل أكبر (تم التعديل في script.js) */
         .avatar {
-            width: 40px;
-            height: 40px;
+            width: 45px; /* زيادة حجم الأفاتار قليلاً */
+            height: 45px; /* زيادة حجم الأفاتار قليلاً */
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 20px;
+            font-size: 1.25rem; /* تعديل حجم الأيقونة داخل الأفاتار */
+            transition: transform 0.2s ease-in-out; /* إضافة انتقال سلس لتأثير التحويم */
         }
-        body { 
-            font-family: 'Tajawal', sans-serif; 
+        .avatar:hover {
+            transform: scale(1.1); /* تأثير تكبير طفيف عند التحويم */
+        }
+
+        /* 3. تحسينات على مؤشر الكتابة */
+        .typing-indicator span {
+            display: inline-block;
+            width: 8px; /* زيادة حجم النقاط */
+            height: 8px; /* زيادة حجم النقاط */
+            background-color: #a8a29e; /* لون أغمق قليلاً للنقاط */
+            border-radius: 50%;
+            margin-right: 3px; /* زيادة التباعد بين النقاط */
+            animation: bounce 1.2s infinite; /* تعديل مدة الحركة */
+        }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); opacity: 0.7; } /* إضافة تغيير في الشفافية */
+            50% { transform: translateY(-7px); opacity: 1; } /* زيادة مدى الحركة */
+        }
+
+        /* 4. فواصل بصرية بين الرسائل */
+        .message-separator {
+            border-top: 1px solid #e5e7eb; /* خط فاصل رمادي فاتح */
+            margin-top: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        /* 5. تحسين زر "الكل" (تم التعديل في script.js للأيقونة) */
+        .response-btn.all-characters {
+            background-color: #7c3aed; /* لون بنفسجي أغمق قليلاً لزر "الكل" */
+            @apply hover:bg-purple-800; /* استخدام apply لتطبيق hover color من tailwind */
+        }
+
+        /* --- التحسينات على التفاعلات --- */
+        /* 1. تأثيرات التحويم الأنيقة */
+        .response-btn {
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out; /* إضافة transition للتحويم */
+        }
+        .response-btn:hover {
+            transform: scale(1.05); /* تكبير طفيف عند التحويم */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* إضافة ظل عند التحويم */
+        }
+        .dark-mode-toggle:hover, .copy-btn:hover, #sendButton:hover {
+            transform: scale(1.1); /* تأثير تكبير طفيف لأزرار أخرى */
+        }
+        .copy-btn {
+            transition: background-color 0.2s ease, color 0.2s ease, opacity 0.3s ease;
+        }
+
+
+        /* 2. انتقالات سلسة (تم تفعيلها بالفعل في Tailwind وبعض العناصر الأخرى) */
+        html {
+            scroll-behavior: smooth; /* تفعيل الانتقال السلس للصفحة */
+        }
+
+        /* 3. تأكيد بصري عند اختيار الشخصية (تم التعديل في script.js) */
+        .response-btn.selected {
+            outline: 2px solid #facc15; /* إضافة حدود ذهبية عند التحديد */
+            @apply shadow-md; /* إضافة ظل عند التحديد باستخدام apply من tailwind */
+        }
+
+
+        /* 4. تحسين زر النسخ بصريًا (تم التعديل في script.js للأيقونة والتسمية) */
+        .copy-btn {
+            background-color: #e0e0e0;
+            color: #757575;
+            @apply dark:bg-gray-600 dark:text-gray-400 hover:bg-gray-300 dark:hover:bg-gray-500; /* استخدام apply لألوان الوضع الداكن والتحويم من tailwind */
+            border-radius: 0.5rem;
+            padding: 0.3rem 0.6rem;
+            font-size: 0.8rem;
+            opacity: 0; /* مخفي افتراضيًا */
+            transition: opacity 0.3s ease, transform 0.2s ease;
+        }
+        .group:hover .copy-btn {
+            opacity: 1; /* يظهر عند التحويم على مجموعة الرسالة */
+        }
+        .copy-btn:active {
+            transform: scale(0.95); /* تأثير ضغط طفيف عند النقر */
+        }
+
+
+        /* --- تنظيم العناصر البصرية --- */
+        body {
+            font-family: 'Tajawal', sans-serif;
             margin: 0;
             padding: 0;
+            @apply bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white; /* استخدام apply لألوان الخلفية والنص من tailwind */
+            transition: background-color 0.5s ease, color 0.5s ease; /* انتقال سلس لألوان الخلفية والنص */
         }
-        .message-content p { margin-bottom: 0.5rem; }
-        .message-content ul { list-style-type: disc; padding-right: 20px; }
-        .message-content strong { font-weight: bold; }
+        .container {
+            @apply max-w-3xl mx-auto px-4 md:px-8; /* زيادة الحد الأقصى لعرض الحاوية قليلاً */
+        }
+        header {
+            @apply bg-blue-700 dark:bg-blue-900 p-5 shadow-lg; /* زيادة الحشوة في الرأس وزيادة الظل قليلاً */
+        }
+        footer {
+            @apply bg-gray-200 dark:bg-gray-800 p-4 text-center text-gray-700 dark:text-gray-300 border-t border-gray-300 dark:border-gray-700 mt-8; /* زيادة الهامش العلوي للفاصل */
+        }
         .dark-mode-toggle {
             position: absolute;
             left: 1rem;
             top: 50%;
             transform: translateY(-50%);
             color: white;
-            font-size: 1.25rem;
+            font-size: 1.5rem; /* زيادة حجم أيقونة الوضع الداكن */
             cursor: pointer;
-            transition: color 0.3s;
+            transition: color 0.3s, transform 0.3s; /* إضافة انتقال سلس للتحويل */
         }
-        .dark-mode-toggle:hover {
-            color: #facc15;
+
+
+        /* --- تعديلات طفيفة أخرى --- */
+        .message-content p, .message-content ul, .message-content ol {
+            margin-bottom: 0.6rem; /* زيادة الهامش السفلي للعناصر النصية في الرسالة */
+            line-height: 1.7; /* زيادة تباعد الأسطر قليلاً لتحسين القراءة */
         }
+        .font-bold {
+            font-weight: 700; /* التأكد من استخدام الوزن 700 للخط العريض */
+        }
+
+
     </style>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body class="bg-gray-100 dark:bg-gray-900">
     <div class="min-h-screen flex flex-col">
@@ -75,7 +171,7 @@
             <h1 class="text-white text-xl font-bold text-center">
                 <i class="fas fa-comments text-yellow-300 mr-2"></i> حوار سياسي افتراضي
             </h1>
-            <span id="darkModeToggle" class="dark-mode-toggle">
+            <span id="darkModeToggle" class="dark-mode-toggle" title="تبديل الوضع الداكن">
                 <i class="fas fa-moon"></i>
             </span>
         </header>
