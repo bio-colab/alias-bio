@@ -3,40 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>حوار سياسي</title>
+    <title>حوار سياسي </title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/showdown/dist/showdown.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
     <style>
         /* --- التحسينات المرئية العامة --- */
-        /* 1. تنوع ألوان الفقاعات - محسن لمزيد من التمييز بين الشخصيات */
-        .bubble-user { 
-            background-color: #e0f7fa; 
-            border-right: 4px solid #4fc3f7; 
-        }
-        .bubble-analyst { 
-            background-color: #e8f5e9; 
-            border-right: 4px solid #66bb6a; 
-        }
-        .bubble-creative { 
-            background-color: #f3e5f5; 
-            border-right: 4px solid #ab47bc;
-        }
-        .bubble-comedian { 
-            background-color: #fff8e1;
-            border-right: 4px solid #ffd54f; 
-        }
-        .bubble-critic { 
-            background-color: #ffebee; 
-            border-right: 4px solid #ef5350; 
-        }
+        /* 1. تنوع ألوان الفقاعات */
+        .bubble-user { background-color: #e0f7fa; dark:bg-blue-900; } /* درجة أفتح للمستخدم */
+        .bubble-analyst { background-color: #f0f4c3; dark:bg-green-800; } /* درجة للأفهم للمحلل */
+        .bubble-creative { background-color: #e8f5e9; dark:bg-purple-800; } /* درجة افتح للمبدع */
+        .bubble-comedian { background-color: #ffe0b2; dark:bg-yellow-700; } /* درجة افتح للساخر */
+        .bubble-critic { background-color: #ffcdd2; dark:bg-red-800; } /* درجة افتح للناقد */
 
-        /* تحسين ظهور الفقاعات وإضافة تأثيرات الانتقال */
         .message-bubble {
             word-wrap: break-word;
             overflow-wrap: break-word;
@@ -46,330 +29,158 @@
             padding: 0.75rem;
             overflow: auto;
             max-height: 300px;
-            border-radius: 1.25rem;
-            transition: all 0.3s ease;
-            position: relative;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
-        }
-        
-        /* تأثير التحويم على الفقاعات */
-        .message-bubble:hover {
-            box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+            border-radius: 1.25rem; /* زيادة انحناء الزوايا */
+            transition: background-color 0.3s ease; /* انتقال سلس لتغيير لون الخلفية */
         }
 
-        /* تحسين تصميم الأفاتار */
+        /* 2. تخصيص الأفاتار بشكل أكبر (تم التعديل في script.js) */
         .avatar {
-            width: 45px;
-            height: 45px;
+            width: 45px; /* زيادة حجم الأفاتار قليلاً */
+            height: 45px; /* زيادة حجم الأفاتار قليلاً */
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.25rem;
-            transition: transform 0.2s ease-in-out, box-shadow 0.3s ease;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+            font-size: 1.25rem; /* تعديل حجم الأيقونة داخل الأفاتار */
+            transition: transform 0.2s ease-in-out; /* إضافة انتقال سلس لتأثير التحويم */
         }
         .avatar:hover {
-            transform: scale(1.1);
-            box-shadow: 0 3px 6px rgba(0,0,0,0.16);
+            transform: scale(1.1); /* تأثير تكبير طفيف عند التحويم */
         }
 
-        /* تحسين مؤشر الكتابة */
-        .typing-indicator {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 0.5rem;
-        }
+        /* 3. تحسينات على مؤشر الكتابة */
         .typing-indicator span {
             display: inline-block;
-            width: 8px;
-            height: 8px;
-            background-color: #a8a29e;
+            width: 8px; /* زيادة حجم النقاط */
+            height: 8px; /* زيادة حجم النقاط */
+            background-color: #a8a29e; /* لون أغمق قليلاً للنقاط */
             border-radius: 50%;
-            margin-right: 3px;
-            animation: bounce 1.2s infinite;
-        }
-        .typing-indicator span:nth-child(2) {
-            animation-delay: 0.2s;
-        }
-        .typing-indicator span:nth-child(3) {
-            animation-delay: 0.4s;
+            margin-right: 3px; /* زيادة التباعد بين النقاط */
+            animation: bounce 1.2s infinite; /* تعديل مدة الحركة */
         }
         @keyframes bounce {
-            0%, 100% { transform: translateY(0); opacity: 0.7; }
-            50% { transform: translateY(-7px); opacity: 1; }
+            0%, 100% { transform: translateY(0); opacity: 0.7; } /* إضافة تغيير في الشفافية */
+            50% { transform: translateY(-7px); opacity: 1; } /* زيادة مدى الحركة */
         }
 
-        /* تحسين الفواصل بين الرسائل */
+        /* 4. فواصل بصرية بين الرسائل */
         .message-separator {
-            border-top: 1px solid #e5e7eb;
+            border-top: 1px solid #e5e7eb; /* خط فاصل رمادي فاتح */
             margin-top: 1rem;
             margin-bottom: 1rem;
-            position: relative;
-        }
-        .message-separator::after {
-            content: "";
-            position: absolute;
-            top: -3px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 6px;
-            height: 6px;
-            background-color: #e5e7eb;
-            border-radius: 50%;
         }
 
-        /* تحسين زر "الكل" */
+        /* 5. تحسين زر "الكل" (تم التعديل في script.js للأيقونة) */
         .response-btn.all-characters {
-            background-color: #7c3aed;
-            background-image: linear-gradient(45deg, #7c3aed, #9333ea);
-        }
-        .response-btn.selected {
-            outline: 2px solid #facc15;
-            box-shadow: 0 0 10px rgba(250, 204, 21, 0.5);
-            transform: scale(1.05);
+            background-color: #7c3aed; /* لون بنفسجي أغمق قليلاً لزر "الكل" */
+            @apply hover:bg-purple-800; /* استخدام apply لتطبيق hover color من tailwind */
         }
 
-        /* تحسين تأثيرات التحويم */
+        /* --- التحسينات على التفاعلات --- */
+        /* 1. تأثيرات التحويم الأنيقة */
         .response-btn {
-            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out; /* إضافة transition للتحويم */
         }
         .response-btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+            transform: scale(1.05); /* تكبير طفيف عند التحويم */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* إضافة ظل عند التحويم */
         }
-        .dark-mode-toggle:hover, .copy-btn:hover, #sendButton:hover, .export-btn:hover {
-            transform: scale(1.1);
+        .dark-mode-toggle:hover, .copy-btn:hover, #sendButton:hover {
+            transform: scale(1.1); /* تأثير تكبير طفيف لأزرار أخرى */
         }
-        .copy-btn, .export-btn {
+        .copy-btn {
             transition: background-color 0.2s ease, color 0.2s ease, opacity 0.3s ease;
         }
 
-        /* تحسين زر النسخ والتصدير بصريًا */
-        .action-btn {
+
+        /* 2. انتقالات سلسة (تم تفعيلها بالفعل في Tailwind وبعض العناصر الأخرى) */
+        html {
+            scroll-behavior: smooth; /* تفعيل الانتقال السلس للصفحة */
+        }
+
+        /* 3. تأكيد بصري عند اختيار الشخصية (تم التعديل في script.js) */
+        .response-btn.selected {
+            outline: 2px solid #facc15; /* إضافة حدود ذهبية عند التحديد */
+            @apply shadow-md; /* إضافة ظل عند التحديد باستخدام apply من tailwind */
+        }
+
+
+        /* 4. تحسين زر النسخ بصريًا (تم التعديل في script.js للأيقونة والتسمية) */
+        .copy-btn {
             background-color: #e0e0e0;
             color: #757575;
+            @apply dark:bg-gray-600 dark:text-gray-400 hover:bg-gray-300 dark:hover:bg-gray-500; /* استخدام apply لألوان الوضع الداكن والتحويم من tailwind */
             border-radius: 0.5rem;
             padding: 0.3rem 0.6rem;
             font-size: 0.8rem;
-            opacity: 0;
+            opacity: 0; /* مخفي افتراضيًا */
             transition: opacity 0.3s ease, transform 0.2s ease;
-            margin-left: 0.3rem;
         }
-        .group:hover .action-btn {
-            opacity: 1;
+        .group:hover .copy-btn {
+            opacity: 1; /* يظهر عند التحويم على مجموعة الرسالة */
         }
-        .action-btn:active {
-            transform: scale(0.95);
+        .copy-btn:active {
+            transform: scale(0.95); /* تأثير ضغط طفيف عند النقر */
         }
+
 
         /* --- تنظيم العناصر البصرية --- */
         body {
             font-family: 'Tajawal', sans-serif;
             margin: 0;
             padding: 0;
-            transition: background-color 0.5s ease, color 0.5s ease;
+            @apply bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white; /* استخدام apply لألوان الخلفية والنص من tailwind */
+            transition: background-color 0.5s ease, color 0.5s ease; /* انتقال سلس لألوان الخلفية والنص */
         }
-
-        /* تحسين الخيوط المرتبطة (Threading) */
-        .thread-indicator {
+        .container {
+            @apply max-w-3xl mx-auto px-4 md:px-8; /* زيادة الحد الأقصى لعرض الحاوية قليلاً */
+        }
+        header {
+            @apply bg-blue-700 dark:bg-blue-900 p-5 shadow-lg; /* زيادة الحشوة في الرأس وزيادة الظل قليلاً */
+        }
+        footer {
+            @apply bg-gray-200 dark:bg-gray-800 p-4 text-center text-gray-700 dark:text-gray-300 border-t border-gray-300 dark:border-gray-700 mt-8; /* زيادة الهامش العلوي للفاصل */
+        }
+        .dark-mode-toggle {
             position: absolute;
-            left: -20px;
-            top: 0;
-            bottom: 0;
-            width: 2px;
-            background-color: #CBD5E0;
-        }
-        .thread-container {
-            position: relative;
-            padding-left: 20px;
-        }
-
-        /* مؤشر التحميل المتقدم */
-        .progress-bar {
-            height: 3px;
-            background-color: #4299E1;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 0%;
-            z-index: 100;
-            transition: width 0.3s ease;
-        }
-
-        /* تعديلات التوافقية مع الجوال */
-        @media (max-width: 640px) {
-            .message-bubble {
-                max-width: 90%;
-                font-size: 0.9rem;
-            }
-            .avatar {
-                width: 35px;
-                height: 35px;
-                font-size: 1rem;
-            }
-            .response-btn {
-                padding: 0.5rem;
-            }
-            .thread-indicator {
-                left: -10px;
-            }
-            .thread-container {
-                padding-left: 10px;
-            }
-        }
-
-        /* تصميم قائمة المواضيع المقترحة */
-        .topic-suggestions {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-            margin-top: 0.5rem;
-        }
-        .topic-suggestion {
-            background-color: #EDF2F7;
-            color: #2D3748;
-            padding: 0.5rem 0.8rem;
-            border-radius: 1rem;
-            font-size: 0.8rem;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: white;
+            font-size: 1.5rem; /* زيادة حجم أيقونة الوضع الداكن */
             cursor: pointer;
-            transition: all 0.2s;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            max-width: 150px;
+            transition: color 0.3s, transform 0.3s; /* إضافة انتقال سلس للتحويل */
         }
-        .topic-suggestion:hover {
-            background-color: #E2E8F0;
-            transform: translateY(-2px);
+
+
+        /* --- تعديلات طفيفة أخرى --- */
+        .message-content p, .message-content ul, .message-content ol {
+            margin-bottom: 0.6rem; /* زيادة الهامش السفلي للعناصر النصية في الرسالة */
+            line-height: 1.7; /* زيادة تباعد الأسطر قليلاً لتحسين القراءة */
         }
-        
-        /* مودال تخصيص الشخصيات */
-        .modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: rgba(0, 0, 0, 0.5);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 50;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s ease;
+        .font-bold {
+            font-weight: 700; /* التأكد من استخدام الوزن 700 للخط العريض */
         }
-        .modal.active {
-            opacity: 1;
-            pointer-events: auto;
-        }
-        .modal-content {
-            background-color: white;
-            border-radius: 0.5rem;
-            max-width: 500px;
-            width: 90%;
-            max-height: 80vh;
-            overflow-y: auto;
-            padding: 1.5rem;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            transform: translateY(-20px);
-            transition: transform 0.3s ease;
-        }
-        .modal.active .modal-content {
-            transform: translateY(0);
-        }
-        .dark .modal-content {
-            background-color: #2D3748;
-            color: white;
-        }
-        
-        /* شريط تقدم استجابة API */
-        .character-loading {
-            position: relative;
-            display: inline-block;
-            margin-right: 0.5rem;
-        }
-        .character-loading-indicator {
-            width: 1rem;
-            height: 1rem;
-            border-radius: 50%;
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            border-top-color: white;
-            animation: spin 1s linear infinite;
-        }
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-        
-        /* لوحة المساعدة */
-        .help-panel {
-            position: fixed;
-            top: 0;
-            left: 0;
-            height: 100%;
-            width: 300px;
-            background-color: white;
-            z-index: 40;
-            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
-            transform: translateX(-100%);
-            transition: transform 0.3s ease;
-            padding: 1rem;
-            overflow-y: auto;
-        }
-        .help-panel.active {
-            transform: translateX(0);
-        }
-        .dark .help-panel {
-            background-color: #2D3748;
-            color: white;
-        }
+
+
     </style>
 </head>
-<body class="bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white">
-    <!-- شريط التقدم للتحميل -->
-    <div id="progress-bar" class="progress-bar"></div>
-    
+<body class="bg-gray-100 dark:bg-gray-900">
     <div class="min-h-screen flex flex-col">
         <header class="bg-blue-600 dark:bg-blue-800 p-4 shadow-md relative">
-            <div class="flex justify-between items-center">
-                <div class="flex-1 flex items-center">
-                    <span id="darkModeToggle" class="dark-mode-toggle mr-2" title="تبديل الوضع الداكن">
-                        <i class="fas fa-moon"></i>
-                    </span>
-                    <span id="helpButton" class="dark-mode-toggle mr-2" title="المساعدة">
-                        <i class="fas fa-question-circle"></i>
-                    </span>
-                </div>
-                <h1 class="text-white text-xl font-bold text-center flex-1">
-                    <i class="fas fa-comments text-yellow-300 mr-2"></i> حوار سياسي v.2
-                </h1>
-                <div class="flex-1 flex justify-end">
-                    <button id="exportButton" class="text-white bg-blue-700 hover:bg-blue-800 p-2 rounded-full" title="تصدير المحادثة">
-                        <i class="fas fa-download"></i>
-                    </button>
-                    <button id="customizeButton" class="text-white bg-purple-700 hover:bg-purple-800 p-2 rounded-full mr-2" title="تخصيص الشخصيات">
-                        <i class="fas fa-user-cog"></i>
-                    </button>
-                </div>
-            </div>
+            <h1 class="text-white text-xl font-bold text-center">
+                <i class="fas fa-comments text-yellow-300 mr-2"></i> حوار سياسي افتراضي
+            </h1>
+            <span id="darkModeToggle" class="dark-mode-toggle" title="تبديل الوضع الداكن">
+                <i class="fas fa-moon"></i>
+            </span>
         </header>
-        
         <main class="flex-1 p-4 container mx-auto max-w-2xl">
-            <div id="chat" class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4 mb-4 overflow-y-auto border border-gray-200 dark:border-gray-700 min-h-[300px]"></div>
-            
+            <div id="chat" class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4 mb-4 overflow-y-auto border border-gray-200 dark:border-gray-700"></div>
             <div class="mb-4">
                 <input type="text" id="topic" class="hidden" placeholder="أدخل موضوعًا سياسيًا للنقاش...">
             </div>
-            
-            <!-- عرض المواضيع المقترحة -->
-            <div id="topic-suggestions" class="topic-suggestions hidden"></div>
-            
-            <!-- مؤشر الشخصيات النشطة -->
-            <div id="active-characters" class="flex items-center justify-center mt-2 mb-4 flex-wrap gap-2 hidden"></div>
         </main>
-        
         <footer class="bg-gray-200 dark:bg-gray-800 p-4 text-center text-gray-700 dark:text-gray-300 border-t border-gray-300 dark:border-gray-700">
             <p class="text-sm">
                 <strong> المشروع:</strong> حوار سياسي<br>
@@ -378,54 +189,6 @@
             </p>
         </footer>
     </div>
-    
-    <!-- مودال تخصيص الشخصيات -->
-    <div id="customize-modal" class="modal">
-        <div class="modal-content">
-            <div class="flex justify-between items-center mb-4">
-                <h3 class="text-lg font-bold">تخصيص الشخصيات</h3>
-                <button id="close-customize-modal" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            <div id="character-settings"></div>
-            <div class="mt-4">
-                <button id="save-character-settings" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded-lg w-full">حفظ التغييرات</button>
-            </div>
-        </div>
-    </div>
-    
-    <!-- لوحة المساعدة -->
-    <div id="help-panel" class="help-panel">
-        <div class="flex justify-between items-center mb-4">
-            <h3 class="text-lg font-bold">كيف تستخدم التطبيق</h3>
-            <button id="close-help" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300">
-                <i class="fas fa-times"></i>
-            </button>
-        </div>
-        <div class="help-content">
-            <div class="mb-4">
-                <h4 class="font-bold mb-2">كيفية البدء</h4>
-                <p>1. أدخل موضوعاً سياسياً في حقل النص</p>
-                <p>2. اختر شخصية للرد أو انقر على "الكل" للحصول على كل الآراء</p>
-            </div>
-            <div class="mb-4">
-                <h4 class="font-bold mb-2">الشخصيات</h4>
-                <p><strong>المحلل:</strong> يقدم تحليل موضوعي وعميق</p>
-                <p><strong>المبدع:</strong> يطرح أفكار مبتكرة وحلول إبداعية</p>
-                <p><strong>الساخر:</strong> يعلق بأسلوب ساخر وفكاهي</p>
-                <p><strong>الناقد:</strong> يقدم نقداً بناءً ويكشف نقاط الضعف</p>
-            </div>
-            <div class="mb-4">
-                <h4 class="font-bold mb-2">المميزات</h4>
-                <p>- تصدير المحادثة كملف PDF</p>
-                <p>- تخصيص الشخصيات حسب رغبتك</p>
-                <p>- اقتراحات لمواضيع سياسية</p>
-                <p>- نسخ الردود بنقرة واحدة</p>
-            </div>
-        </div>
-    </div>
-    
     <script src="script.js"></script>
 </body>
 </html>
