@@ -67,7 +67,6 @@ let currentTopic = '';
 let selectedCharacter = null;
 let responseHistory = []; // لتخزين سجل المحادثة للتصدير
 let activeCharacters = {}; // لتتبع حالة الشخصيات النشطة
-let darkMode = false; // لتتبع حالة الوضع الداكن
 let animationsEnabled = true; // للتحكم في تفعيل/تعطيل الرسوم المتحركة
 let typingTimeout; // لتتبع مؤقت مؤشر الكتابة
 
@@ -75,11 +74,6 @@ let typingTimeout; // لتتبع مؤقت مؤشر الكتابة
 
 document.addEventListener('DOMContentLoaded', function() {
     initApp();
-    setupThemeToggle();
-    // استرجاع الوضع المفضل
-    if (localStorage.getItem('darkMode') === 'true') {
-        toggleDarkMode(true);
-    }
 });
 
 function initApp() {
@@ -122,27 +116,6 @@ function adjustChatContainerHeight() {
     chatContainer.style.height = `${Math.max(300, optimalHeight)}px`;
 }
 
-function setupThemeToggle() {
-    const darkModeToggle = document.getElementById('darkModeToggle');
-    if (darkModeToggle) {
-        darkModeToggle.addEventListener('click', () => toggleDarkMode());
-    }
-}
-
-function toggleDarkMode(setDark) {
-    darkMode = setDark !== undefined ? setDark : !darkMode;
-
-    if (darkMode) {
-        document.documentElement.classList.add('dark');
-        document.getElementById('darkModeToggle').innerHTML = '<i class="fas fa-sun"></i>';
-    } else {
-        document.documentElement.classList.remove('dark');
-        document.getElementById('darkModeToggle').innerHTML = '<i class="fas fa-moon"></i>';
-    }
-
-    // حفظ التفضيل
-    localStorage.setItem('darkMode', darkMode);
-}
 
 function setupAccessibilityFeatures() {
     // إضافة زر لتفعيل/تعطيل الرسوم المتحركة للمستخدمين الذين يعانون من حساسية الحركة
@@ -197,11 +170,6 @@ function setupKeyboardNavigation() {
             document.getElementById('helpButton').click();
         }
 
-        // Alt + T للتبديل بين الوضعين الداكن والفاتح
-        if (e.key === 't' && e.altKey) {
-            e.preventDefault();
-            toggleDarkMode();
-        }
 
         // Alt + S لتقديم الموضوع
         if (e.key === 's' && e.altKey) {
@@ -399,7 +367,7 @@ function setupChatInterface() {
 
     // إنشاء حاوية الرسائل مع تحكم أفضل بالارتفاع
     const chatContainer = document.createElement('div');
-    chatContainer.className = 'flex-1 overflow-y-auto bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4 mb-4 border border-gray-200 dark:border-gray-700 transition-colors';
+    chatContainer.className = 'flex-1 overflow-y-auto bg-white rounded-lg shadow-lg p-4 mb-4 border border-gray-200 border-gray-700 transition-colors';
     chatContainer.id = 'chat-messages-container';
 
     // تفريغ حاوية المحادثة وإعادة تعيينها
@@ -420,19 +388,19 @@ function setupChatInterface() {
     const topicInput = document.createElement('input');
     topicInput.type = 'text';
     topicInput.id = 'topicInput';
-    topicInput.className = 'block w-full px-4 py-3 bg-white dark:bg-gray-700 text-gray-900 dark:text-white border border-gray-300 dark:border-gray-600 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 pr-12 transition-colors';
+    topicInput.className = 'block w-full px-4 py-3 bg-white text-gray-900 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 pr-12 transition-colors';
     topicInput.placeholder = 'أدخل موضوعًا سياسيًا للنقاش...';
     topicInput.autocomplete = 'off';
 
     const sendButton = document.createElement('button');
     sendButton.id = 'sendButton';
-    sendButton.className = 'absolute left-2 top-1/2 transform -translate-y-1/2 text-blue-500 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 transition-all hover:scale-110';
+    sendButton.className = 'absolute left-2 top-1/2 transform -translate-y-1/2 text-blue-500 hover:text-blue-700 transition-all hover:scale-110';
     sendButton.innerHTML = '<i class="fas fa-paper-plane"></i>';
     sendButton.title = 'إرسال (Alt+S)'; // Keep title for accessibility, but remove from welcome message and help
     sendButton.onclick = submitTopic;
 
     const suggestionsButton = document.createElement('button');
-    suggestionsButton.className = 'absolute left-10 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 transition-all hover:scale-110';
+    suggestionsButton.className = 'absolute left-10 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 transition-all hover:scale-110';
     suggestionsButton.innerHTML = '<i class="fas fa-lightbulb"></i>';
     suggestionsButton.title = 'عرض المواضيع المقترحة';
     suggestionsButton.onclick = () => toggleSuggestions();
@@ -446,7 +414,7 @@ function setupChatInterface() {
     // إنشاء حاوية المقترحات
     const suggestionsContainer = document.createElement('div');
     suggestionsContainer.id = 'topic-suggestions';
-    suggestionsContainer.className = 'topic-suggestions hidden transition-all duration-300 mb-4 max-h-40 overflow-y-auto bg-white dark:bg-gray-700 p-2 rounded-lg shadow-md';
+    suggestionsContainer.className = 'topic-suggestions hidden transition-all duration-300 mb-4 max-h-40 overflow-y-auto bg-white p-2 rounded-lg shadow-md';
     chatInterface.appendChild(suggestionsContainer);
 
     // إنشاء حاوية الشخصيات النشطة
@@ -504,12 +472,12 @@ function addWelcomeMessage() {
     if (!chat) return;
 
     const welcomeMessage = document.createElement('div');
-    welcomeMessage.className = 'text-center py-4 px-3 bg-blue-50 dark:bg-blue-900/30 rounded-lg mb-4 transform transition-all duration-500 animate-fadeIn';
+    welcomeMessage.className = 'text-center py-4 px-3 bg-blue-50 rounded-lg mb-4 transform transition-all duration-500 animate-fadeIn';
     welcomeMessage.innerHTML = `
-        <h2 class="text-lg font-bold text-blue-700 dark:text-blue-300 mb-2">مرحبًا بك في الحوار السياسي الافتراضي!</h2>
-        <p class="text-gray-600 dark:text-gray-300">أدخل موضوعك السياسي في الأسفل، أو اختر من المواضيع المقترحة، ثم اختر شخصية للتفاعل.</p>
+        <h2 class="text-lg font-bold text-blue-700 mb-2">مرحبًا بك في الحوار السياسي الافتراضي!</h2>
+        <p class="text-gray-600">أدخل موضوعك السياسي في الأسفل، أو اختر من المواضيع المقترحة، ثم اختر شخصية للتفاعل.</p>
         <div class="mt-4 flex flex-wrap justify-center gap-2">
-            <button id="show-suggestions-btn" class="px-3 py-1 bg-blue-100 dark:bg-blue-800 text-blue-700 dark:text-blue-300 rounded-full text-sm hover:bg-blue-200 dark:hover:bg-blue-700 transition-colors flex items-center">
+            <button id="show-suggestions-btn" class="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm hover:bg-blue-200 transition-colors flex items-center">
                 <i class="fas fa-lightbulb mr-1"></i> عرض المواضيع المقترحة
             </button>
         </div>
@@ -548,15 +516,15 @@ function addOrUpdateMessage(character, text, messageId, isTyping = false, replyT
     // تعيين فئة فقاعة الرسالة حسب الشخصية
     let bubbleBgClass = isUser
         ? 'bubble-user'
-        : 'border border-gray-200 dark:border-gray-600';
+        : 'border border-gray-200';
 
     if (!isUser) {
-        bubbleBgClass = 'border border-gray-200 dark:border-gray-600 ';
+        bubbleBgClass = 'border border-gray-200 ';
         if (character === 'analyst') bubbleBgClass += 'bubble-analyst';
         else if (character === 'creative') bubbleBgClass += 'bubble-creative';
         else if (character === 'comedian') bubbleBgClass += 'bubble-comedian';
         else if (character === 'critic') bubbleBgClass += 'bubble-critic';
-        else bubbleBgClass += 'bg-white dark:bg-gray-700';
+        else bubbleBgClass += 'bg-white';
     } else {
         bubbleBgClass = 'bubble-user';
     }
@@ -585,11 +553,11 @@ function addOrUpdateMessage(character, text, messageId, isTyping = false, replyT
             ${replyTo ? '<div class="thread-indicator"></div>' : ''}
             ${!isUser ? `<div class="avatar ${avatarInfo.color} text-center flex-shrink-0" title="${characterNames[character]}">${avatarInfo.avatar_icon}</div>` : ''}
             <div class="message-bubble ${isTyping ? 'pulse-animation' : ''} p-3 rounded-xl shadow-sm ${bubbleBgClass} max-w-[80%] relative">
-                <div class="font-bold text-sm text-gray-700 dark:text-gray-300 mb-1 flex justify-between items-center">
+                <div class="font-bold text-sm text-gray-700 mb-1 flex justify-between items-center">
                     <span>${charName}</span>
                     <span class="text-xs text-gray-500">${getTimeString()}</span>
                 </div>
-                ${replyTo ? `<div class="reply-to text-xs text-gray-500 dark:text-gray-400 mb-2 bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded">ردًا على: ${replyTo}</div>` : ''}
+                ${replyTo ? `<div class="reply-to text-xs text-gray-500 mb-2 bg-gray-100 px-2 py-1 rounded">ردًا على: ${replyTo}</div>` : ''}
                 <div class="message-content">${formattedText}</div>
                 ${actionButtons}
             </div>
@@ -646,7 +614,7 @@ function addOrUpdateMessage(character, text, messageId, isTyping = false, replyT
                 timestamp: new Date().toISOString(),
                 topic: currentTopic
             });
-            
+
             // تحديث عنوان المستند لتسهيل الوصول للمحادثة
             if (document.title.indexOf(' - ') === -1) {
                 document.title = currentTopic + ' - منصة الحوار السياسي التفاعلية';
@@ -663,7 +631,7 @@ function formatResponse(text, character) {
     // تتبع ما إذا كان النص يحتوي على محتوى غير مناسب
     const hasInappropriateContent = checkForInappropriateContent(text);
     if (hasInappropriateContent) {
-        return `<div class="bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-300 p-3 rounded-lg text-right">
+        return `<div class="bg-red-100 text-red-700 p-3 rounded-lg text-right">
             <i class="fas fa-exclamation-triangle mr-1"></i> تم حجب هذا المحتوى لاحتوائه على عبارات غير مناسبة.
         </div>`;
     }
@@ -679,7 +647,7 @@ function formatResponse(text, character) {
     let formattedText = converter.makeHtml(text);
 
     // تحسين العرض حسب نوع الشخصية
-    let textWrapper = 'text-right text-black dark:text-white';
+    let textWrapper = 'text-right text-black';
 
     if (character === 'analyst') {
         // تحسين عرض الجداول والمخططات للمحلل
@@ -855,9 +823,9 @@ function submitTopic() {
 
 function showCharacterPrompt() {
     const promptMessage = document.createElement('div');
-    promptMessage.className = 'text-center text-sm text-gray-500 dark:text-gray-400 my-2 animate-pulse';
+    promptMessage.className = 'text-center text-sm text-gray-500 my-2 animate-pulse';
     promptMessage.innerHTML = `
-        <div class="inline-flex items-center px-3 py-1 bg-blue-50 dark:bg-blue-900/30 rounded-full">
+        <div class="inline-flex items-center px-3 py-1 bg-blue-50 rounded-full">
             <i class="fas fa-hand-point-down ml-1"></i>
             اختر شخصية للرد على موضوعك...
         </div>
@@ -913,7 +881,7 @@ async function getResponse(character, shouldRespond = true) {
             thinkingDots = thinkingDots.length < 3 ? thinkingDots + '.' : '';
             const typingIndicator = document.querySelector(`#${messageId} .typing-indicator`);
             if (typingIndicator) {
-                typingIndicator.innerHTML = `<div class="px-2 py-1 bg-gray-100 dark:bg-gray-800 rounded-lg inline-block">جاري التفكير${thinkingDots}</div>`;
+                typingIndicator.innerHTML = `<div class="px-2 py-1 bg-gray-100 rounded-lg inline-block">جاري التفكير${thinkingDots}</div>`;
             }
         }, 500);
 
@@ -1133,7 +1101,7 @@ function updateActiveCharacter(character, isActive) {
     const anyActive = Object.values(activeCharacters).some(active => active);
 
     if (anyActive) {
-        activeCharactersDiv.innerHTML = '<div class="text-sm text-gray-500 dark:text-gray-400 ml-2">الشخصيات النشطة:</div>';
+        activeCharactersDiv.innerHTML = '<div class="text-sm text-gray-500 ml-2">الشخصيات النشطة:</div>';
 
         for (const char in activeCharacters) {
             if (activeCharacters[char]) {
@@ -1263,15 +1231,15 @@ function showConfirmDialog(title, message, onConfirm, onCancel) {
     dialog.id = 'confirm-dialog';
     dialog.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
     dialog.innerHTML = `
-        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4 max-w-md w-full mx-4 transform transition-all duration-300 scale-95">
+        <div class="bg-white rounded-lg shadow-lg p-4 max-w-md w-full mx-4 transform transition-all duration-300 scale-95">
             <div class="flex justify-between items-center mb-4 border-b pb-2">
-                <h3 class="text-lg font-bold text-gray-900 dark:text-white">${title}</h3>
-                <button id="close-dialog" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300">
+                <h3 class="text-lg font-bold text-gray-900">${title}</h3>
+                <button id="close-dialog" class="text-gray-500 hover:text-gray-700">
                     <i class="fas fa-times"></i>
                 </button>
             </div>
             <div class="py-2">
-                <p class="text-gray-700 dark:text-gray-300">${message}</p>
+                <p class="text-gray-700">${message}</p>
             </div>
             <div class="flex justify-end gap-2 mt-4">
                 <button id="cancel-button" class="px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded transition-colors">
@@ -1335,7 +1303,6 @@ function showConfirmDialog(title, message, onConfirm, onCancel) {
 }
 
 // --- وظائف التصدير ---
-
 function exportConversation() {
     if (responseHistory.length === 0) {
         showToast('لا توجد محادثة للتصدير!', 'error');
@@ -1435,8 +1402,8 @@ function exportConversation() {
             messageDiv.style.position = 'relative';
             messageDiv.appendChild(indexBadge);
 
-            // إضافة اسم الشخصية والتاريخ
-            const header = document.createElement('div');
+            // إضافة اسم الشخصية والتاريخ (تم إزالته - سيتم إضافة الاسم داخل محتوى الرسالة)
+            /* const header = document.createElement('div');
             header.style.display = 'flex';
             header.style.justifyContent = 'space-between';
             header.style.marginBottom = '8px';
@@ -1455,9 +1422,9 @@ function exportConversation() {
 
             header.appendChild(nameSpan);
             header.appendChild(dateSpan);
-            messageDiv.appendChild(header);
+            messageDiv.appendChild(header); */
 
-            // إضافة المحتوى بطريقة أفضل
+            // إضافة المحتوى مع اسم الشخصية في البداية
             const content = document.createElement('div');
             content.style.textAlign = 'right';
             content.style.color = '#2d3748';
@@ -1465,10 +1432,29 @@ function exportConversation() {
             content.style.fontSize = '14px';
             content.style.whiteSpace = 'pre-wrap';
             content.style.wordBreak = 'break-word';
-            
-            // استخدام النص الفعلي من سجل المحادثة
-            content.textContent = item.text;
+
+            // إضافة اسم الشخصية بخط عريض كسطر منفصل
+            const characterNamePara = document.createElement('p');
+            characterNamePara.style.fontWeight = 'bold';
+            characterNamePara.style.marginBottom = '5px'; // مساحة صغيرة بين الاسم والنص
+            characterNamePara.textContent = item.characterName + ':'; // إضافة نقطتين بعد الاسم
+
+            content.appendChild(characterNamePara); // إضافة اسم الشخصية أولاً
+            const textContentSpan = document.createElement('span'); // تغليف النص في span
+            textContentSpan.textContent = item.text;
+            content.appendChild(textContentSpan); // ثم إضافة النص الفعلي
+
             messageDiv.appendChild(content);
+
+            // إضافة التاريخ أسفل الرسالة
+            const dateDiv = document.createElement('div');
+            dateDiv.style.fontSize = '12px';
+            dateDiv.style.color = '#718096';
+            dateDiv.style.textAlign = 'left'; // محاذاة التاريخ إلى اليسار أو اليمين حسب اتجاه النص
+            dateDiv.style.marginTop = '5px'; // مساحة صغيرة فوق التاريخ
+            dateDiv.textContent = new Date(item.timestamp).toLocaleString('ar-EG');
+            messageDiv.appendChild(dateDiv);
+
 
             conversationDiv.appendChild(messageDiv);
         });
@@ -1512,135 +1498,7 @@ function exportConversation() {
     }, 500);
 }
 
-function exportSingleResponse(messageId) {
-    const messageElement = document.getElementById(messageId);
-    if (!messageElement) {
-        showToast('لم يتم العثور على الرسالة!', 'error');
-        return;
-    }
-
-    // إظهار مؤشر التحميل
-    showToast('جاري تصدير الرد...');
-
-    setTimeout(() => {
-        const character = messageElement.dataset.character;
-        const text = messageElement.dataset.text || messageElement.querySelector('.message-content').textContent.trim();
-        const charName = characterNames[character] || 'غير معروف';
-
-        // إعداد الحاوية الرئيسية بحجم A4
-        const contentDiv = document.createElement('div');
-        contentDiv.style.width = '210mm';
-        contentDiv.style.minHeight = '297mm';
-        contentDiv.style.margin = '0 auto';
-        contentDiv.style.backgroundColor = '#ffffff';
-        contentDiv.style.padding = '20mm';
-        contentDiv.style.direction = 'rtl';
-        contentDiv.style.position = 'relative';
-        contentDiv.style.boxSizing = 'border-box';
-
-        // إضافة عنوان
-        const header = document.createElement('div');
-        header.style.textAlign = 'center';
-        header.style.marginBottom = '20px';
-        header.style.borderBottom = '2px solid #4299e1';
-        header.style.paddingBottom = '15px';
-        header.innerHTML = `
-            <h1 style="font-size: 24px; font-weight: bold; color: #2b6cb0; margin: 0 0 10px 0;">رد ${charName} على: ${currentTopic}</h1>
-            <p style="color: #4a5568; margin: 0;">تم التصدير في ${new Date().toLocaleString('ar-EG')}</p>
-        `;
-        contentDiv.appendChild(header);
-
-        // إضافة المحتوى
-        const messageDiv = document.createElement('div');
-        messageDiv.style.margin = '20px 0';
-        messageDiv.style.padding = '15px';
-        messageDiv.style.borderRadius = '12px';
-        messageDiv.style.boxShadow = '0 4px 6px rgba(0,0,0,0.1)';
-        messageDiv.style.position = 'relative';
-
-        // تعيين لون خلفية بناءً على الشخصية
-        if (character === 'analyst') {
-            messageDiv.style.backgroundColor = '#e8f5e9';
-            messageDiv.style.borderRight = '4px solid #66bb6a';
-        } else if (character === 'creative') {
-            messageDiv.style.backgroundColor = '#f3e5f5';
-            messageDiv.style.borderRight = '4px solid #ab47bc';
-        } else if (character === 'comedian') {
-            messageDiv.style.backgroundColor = '#fff8e1';
-            messageDiv.style.borderRight = '4px solid #ffd54f';
-        } else if (character === 'critic') {
-            messageDiv.style.backgroundColor = '#ffebee';
-            messageDiv.style.borderRight = '4px solid #ef5350';
-        }
-
-        // إضافة اسم الشخصية
-        const headerName = document.createElement('div');
-        headerName.style.fontWeight = 'bold';
-        headerName.style.marginBottom = '10px';
-        headerName.style.borderBottom = '1px solid #edf2f7';
-        headerName.style.paddingBottom = '8px';
-        headerName.style.color = '#4a5568';
-        headerName.style.fontSize = '16px';
-        headerName.textContent = charName;
-        messageDiv.appendChild(headerName);
-
-        // إضافة المحتوى
-        const content = document.createElement('div');
-        content.style.textAlign = 'right';
-        content.style.lineHeight = '1.6';
-        content.style.fontSize = '14px';
-        content.style.color = '#2d3748';
-        content.style.whiteSpace = 'pre-wrap';
-        content.style.wordBreak = 'break-word';
-        content.textContent = text;
-        messageDiv.appendChild(content);
-
-        contentDiv.appendChild(messageDiv);
-
-        // إضافة الفوتر
-        const footer = document.createElement('div');
-        footer.style.textAlign = 'center';
-        footer.style.marginTop = '30px';
-        footer.style.borderTop = '2px solid #e2e8f0';
-        footer.style.paddingTop = '15px';
-        footer.style.position = 'absolute';
-        footer.style.bottom = '20mm';
-        footer.style.left = '20mm';
-        footer.style.right = '20mm';
-        footer.innerHTML = `
-            <p style="color: #718096; font-size: 12px; margin: 0 0 5px 0;">حوار سياسي - مشروع طوره الياس خضر خلف شرار - كلية العلوم السياسية - جامعة تكريت</p>
-            <p style="color: #a0aec0; font-size: 10px; margin: 0;">تاريخ التصدير: ${new Date().toLocaleString('ar-EG')}</p>
-        `;
-        contentDiv.appendChild(footer);
-
-        // تصدير إلى PDF
-        const element = document.createElement('div');
-        element.appendChild(contentDiv);
-        document.body.appendChild(element);
-
-        const options = {
-            margin: 0,
-            filename: `رد-${charName}-${Date.now()}.pdf`,
-            image: { type: 'jpeg', quality: 0.98 },
-            html2canvas: { scale: 2, useCORS: true },
-            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-        };
-
-        html2pdf()
-            .from(element)
-            .set(options)
-            .save()
-            .then(() => {
-                document.body.removeChild(element);
-                showToast('تم تصدير الرد بنجاح!');
-            })
-            .catch(err => {
-                console.error("خطأ في تصدير الرد:", err);
-                document.body.removeChild(element);
-                showToast('حدث خطأ أثناء تصدير الرد.', 'error');
-            });
-    }, 500);
-}
+	
 
 // --- تهيئة التطبيق عند التحميل ---
 initApp();
