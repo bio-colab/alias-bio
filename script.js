@@ -1,10 +1,10 @@
 // script.js - الإصدار النهائي والمبسط مع تحسينات UI/UX والميزات الأساسية
 
 const apiKeys = {
-    analyst: 'YOUR_API_KEY', // Replace with your actual API key
-    creative: 'YOUR_API_KEY', // Replace with your actual API key
-    comedian: 'YOUR_API_KEY', // Replace with your actual API key
-    critic: 'YOUR_API_KEY'  // Replace with your actual API key
+ analyst: 'AIzaSyCWV12p8IPEEsu9dN-7yFOSOFhV06tWI7s',
+    creative: 'AIzaSyCWV12p8IPEEsu9dN-7yFOSOFhV06tWI7s',
+    comedian: 'AIzaSyCWV12p8IPEEsu9dN-7yFOSOFhV06tWI7s',
+    critic: 'AIzaSyCWV12p8IPEEsu9dN-7yFOSOFhV06tWI7s'
 };
 
 // قاعدة النص الاساسية للـ prompt
@@ -97,7 +97,6 @@ function initApp() {
     setupHelpPanel();
     setupAccessibilityFeatures();
     setupExportFeature();
-
 
     // استمع لحجم النافذة لتحسين التجاوب
     window.addEventListener('resize', debounce(() => {
@@ -513,9 +512,6 @@ function addWelcomeMessage() {
             <button id="show-suggestions-btn" class="px-3 py-1 bg-blue-100 dark:bg-blue-800 text-blue-700 dark:text-blue-300 rounded-full text-sm hover:bg-blue-200 dark:hover:bg-blue-700 transition-colors flex items-center">
                 <i class="fas fa-lightbulb mr-1"></i> عرض المواضيع المقترحة
             </button>
-            <button id="show-help-btn" class="px-3 py-1 bg-green-100 dark:bg-green-800 text-green-700 dark:text-green-300 rounded-full text-sm hover:bg-green-200 dark:hover:bg-green-700 transition-colors flex items-center">
-                <i class="fas fa-question-circle mr-1"></i> دليل الاستخدام
-            </button>
         </div>
     `;
 
@@ -535,19 +531,12 @@ function addWelcomeMessage() {
         };
     }
 
-    // إضافة مستمع لزر عرض المساعدة
-    const helpButton = document.getElementById('show-help-btn');
-    if (helpButton) {
-        helpButton.onclick = function() {
-            document.getElementById('helpButton').click();
-        };
-    }
+    // تم إزالة مستمع زر دليل الاستخدام
 }
 
 // --- وظائف التعامل مع الرسائل ---
 
 function addOrUpdateMessage(character, text, messageId, isTyping = false, replyTo = null) {
-    // ... (rest of addOrUpdateMessage, formatResponse, checkForInappropriateContent, getTimeString, scrollToBottom, copyText, showToast, getHumanReadableError, getReplyToInfo, updateLoadingStatus, updateProgressBar, updateActiveCharacter, getAllResponses, clearChat, showConfirmDialog, exportConversation, exportSingleResponse functions are the same as the previous final script.js)
     if (!chat) return;
 
     const avatarInfo = avatars[character] || avatars.user;
@@ -647,6 +636,7 @@ function addOrUpdateMessage(character, text, messageId, isTyping = false, replyT
 
         // إضافة إلى سجل المحادثة للتصدير
         if (!isTyping) {
+            // تخزين النص كما هو بدون تنسيق لضمان ظهوره بشكل صحيح عند التصدير
             responseHistory.push({
                 id: messageId,
                 character: character,
@@ -656,6 +646,11 @@ function addOrUpdateMessage(character, text, messageId, isTyping = false, replyT
                 timestamp: new Date().toISOString(),
                 topic: currentTopic
             });
+            
+            // تحديث عنوان المستند لتسهيل الوصول للمحادثة
+            if (document.title.indexOf(' - ') === -1) {
+                document.title = currentTopic + ' - منصة الحوار السياسي التفاعلية';
+            }
         }
     }
 
@@ -898,7 +893,6 @@ function showCharacterPrompt() {
 }
 
 async function getResponse(character, shouldRespond = true) {
-    // ... (rest of getResponse, getHumanReadableError, getReplyToInfo, updateLoadingStatus, updateProgressBar, updateActiveCharacter, getAllResponses, clearChat, showConfirmDialog, exportConversation, exportSingleResponse functions are the same as the previous final script.js)
     if (!currentTopic) {
         showToast('لا يوجد موضوع للرد عليه!', 'error');
         return;
@@ -1463,13 +1457,17 @@ function exportConversation() {
             header.appendChild(dateSpan);
             messageDiv.appendChild(header);
 
-            // Add the content - **Corrected line: Use item.text directly**
+            // إضافة المحتوى بطريقة أفضل
             const content = document.createElement('div');
             content.style.textAlign = 'right';
             content.style.color = '#2d3748';
             content.style.lineHeight = '1.5';
             content.style.fontSize = '14px';
-            content.textContent = item.text; // **Use item.text here**
+            content.style.whiteSpace = 'pre-wrap';
+            content.style.wordBreak = 'break-word';
+            
+            // استخدام النص الفعلي من سجل المحادثة
+            content.textContent = item.text;
             messageDiv.appendChild(content);
 
             conversationDiv.appendChild(messageDiv);
@@ -1515,7 +1513,6 @@ function exportConversation() {
 }
 
 function exportSingleResponse(messageId) {
-    // ... (rest of exportSingleResponse function is the same as previous final script.js)
     const messageElement = document.getElementById(messageId);
     if (!messageElement) {
         showToast('لم يتم العثور على الرسالة!', 'error');
@@ -1530,19 +1527,28 @@ function exportSingleResponse(messageId) {
         const text = messageElement.dataset.text || messageElement.querySelector('.message-content').textContent.trim();
         const charName = characterNames[character] || 'غير معروف';
 
-        // إنشاء محتوى التصدير
+        // إعداد الحاوية الرئيسية بحجم A4
         const contentDiv = document.createElement('div');
-        contentDiv.className = 'p-4 bg-white';
+        contentDiv.style.width = '210mm';
+        contentDiv.style.minHeight = '297mm';
+        contentDiv.style.margin = '0 auto';
+        contentDiv.style.backgroundColor = '#ffffff';
+        contentDiv.style.padding = '20mm';
         contentDiv.style.direction = 'rtl';
-        contentDiv.style.display = 'block'; // Ensure block display
+        contentDiv.style.position = 'relative';
+        contentDiv.style.boxSizing = 'border-box';
 
         // إضافة عنوان
-        contentDiv.innerHTML = `
-            <div style="text-align: center; margin-bottom: 20px; border-bottom: 2px solid #4299e1; padding-bottom: 15px;">
-                <h1 style="font-size: 24px; font-weight: bold; color: #2b6cb0;">رد ${charName} على: ${currentTopic}</h1>
-                <p style="color: #4a5568;">تم التصدير في ${new Date().toLocaleString('ar-EG')}</p>
-            </div>
+        const header = document.createElement('div');
+        header.style.textAlign = 'center';
+        header.style.marginBottom = '20px';
+        header.style.borderBottom = '2px solid #4299e1';
+        header.style.paddingBottom = '15px';
+        header.innerHTML = `
+            <h1 style="font-size: 24px; font-weight: bold; color: #2b6cb0; margin: 0 0 10px 0;">رد ${charName} على: ${currentTopic}</h1>
+            <p style="color: #4a5568; margin: 0;">تم التصدير في ${new Date().toLocaleString('ar-EG')}</p>
         `;
+        contentDiv.appendChild(header);
 
         // إضافة المحتوى
         const messageDiv = document.createElement('div');
@@ -1550,7 +1556,7 @@ function exportSingleResponse(messageId) {
         messageDiv.style.padding = '15px';
         messageDiv.style.borderRadius = '12px';
         messageDiv.style.boxShadow = '0 4px 6px rgba(0,0,0,0.1)';
-        messageDiv.style.position = 'relative'; // Ensure relative positioning for content flow
+        messageDiv.style.position = 'relative';
 
         // تعيين لون خلفية بناءً على الشخصية
         if (character === 'analyst') {
@@ -1568,15 +1574,15 @@ function exportSingleResponse(messageId) {
         }
 
         // إضافة اسم الشخصية
-        const header = document.createElement('div');
-        header.style.fontWeight = 'bold';
-        header.style.marginBottom = '10px';
-        header.style.borderBottom = '1px solid #edf2f7';
-        header.style.paddingBottom = '8px';
-        header.style.color = '#4a5568';
-        header.style.fontSize = '16px';
-        header.textContent = charName;
-        messageDiv.appendChild(header);
+        const headerName = document.createElement('div');
+        headerName.style.fontWeight = 'bold';
+        headerName.style.marginBottom = '10px';
+        headerName.style.borderBottom = '1px solid #edf2f7';
+        headerName.style.paddingBottom = '8px';
+        headerName.style.color = '#4a5568';
+        headerName.style.fontSize = '16px';
+        headerName.textContent = charName;
+        messageDiv.appendChild(headerName);
 
         // إضافة المحتوى
         const content = document.createElement('div');
@@ -1584,19 +1590,28 @@ function exportSingleResponse(messageId) {
         content.style.lineHeight = '1.6';
         content.style.fontSize = '14px';
         content.style.color = '#2d3748';
-        content.style.display = 'block'; // Ensure block display for content
+        content.style.whiteSpace = 'pre-wrap';
+        content.style.wordBreak = 'break-word';
         content.textContent = text;
         messageDiv.appendChild(content);
 
         contentDiv.appendChild(messageDiv);
 
         // إضافة الفوتر
-        contentDiv.innerHTML += `
-            <div style="text-align: center; margin-top: 30px; border-top: 2px solid #e2e8f0; padding-top: 15px;">
-                <p style="color: #718096; font-size: 12px;">حوار سياسي - مشروع طوره الياس خضر خلف شرار - كلية العلوم السياسية - جامعة تكريت</p>
-                <p style="color: #a0aec0; font-size: 10px;">تاريخ التصدير: ${new Date().toLocaleString('ar-EG')}</p>
-            </div>
+        const footer = document.createElement('div');
+        footer.style.textAlign = 'center';
+        footer.style.marginTop = '30px';
+        footer.style.borderTop = '2px solid #e2e8f0';
+        footer.style.paddingTop = '15px';
+        footer.style.position = 'absolute';
+        footer.style.bottom = '20mm';
+        footer.style.left = '20mm';
+        footer.style.right = '20mm';
+        footer.innerHTML = `
+            <p style="color: #718096; font-size: 12px; margin: 0 0 5px 0;">حوار سياسي - مشروع طوره الياس خضر خلف شرار - كلية العلوم السياسية - جامعة تكريت</p>
+            <p style="color: #a0aec0; font-size: 10px; margin: 0;">تاريخ التصدير: ${new Date().toLocaleString('ar-EG')}</p>
         `;
+        contentDiv.appendChild(footer);
 
         // تصدير إلى PDF
         const element = document.createElement('div');
@@ -1604,7 +1619,7 @@ function exportSingleResponse(messageId) {
         document.body.appendChild(element);
 
         const options = {
-            margin: 15,
+            margin: 0,
             filename: `رد-${charName}-${Date.now()}.pdf`,
             image: { type: 'jpeg', quality: 0.98 },
             html2canvas: { scale: 2, useCORS: true },
