@@ -25,7 +25,6 @@
     <!-- تكوين Tailwind -->
     <script>
         tailwind.config = {
-            darkMode: 'class',
             theme: {
                 extend: {
                     fontFamily: {
@@ -56,27 +55,27 @@
         .bubble-user {
             background-color: #e0f7fa;
             border-right: 4px solid #4fc3f7;
-            @apply dark:bg-blue-800; /* تعديل لون الفقاعة في الوضع الداكن */
+             /* تعديل لون الفقاعة في الوضع الداكن */
         }
         .bubble-analyst {
             background-color: #e8f5e9;
             border-right: 4px solid #66bb6a;
-            @apply dark:bg-green-800; /* تعديل لون الفقاعة في الوضع الداكن */
+             /* تعديل لون الفقاعة في الوضع الداكن */
         }
         .bubble-creative {
             background-color: #f3e5f5;
             border-right: 4px solid #ab47bc;
-            @apply dark:bg-purple-800; /* تعديل لون الفقاعة في الوضع الداكن */
+             /* تعديل لون الفقاعة في الوضع الداكن */
         }
         .bubble-comedian {
             background-color: #fff8e1;
             border-right: 4px solid #ffd54f;
-            @apply dark:bg-yellow-700; /* تعديل لون الفقاعة في الوضع الداكن */
+             /* تعديل لون الفقاعة في الوضع الداكن */
         }
         .bubble-critic {
             background-color: #ffebee;
             border-right: 4px solid #ef5350;
-            @apply dark:bg-red-800; /* تعديل لون الفقاعة في الوضع الداكن */
+             /* تعديل لون الفقاعة في الوضع الداكن */
         }
 
         /* تحسين ظهور الفقاعات وإضافة تأثيرات الانتقال */
@@ -325,10 +324,7 @@
         .help-panel.active {
             transform: translateX(0);
         }
-        .dark .help-panel {
-            background-color: #2D3748;
-            color: white;
-        }
+
 
         /* التنبيهات Toast */
         .toast-notification {
@@ -374,23 +370,18 @@
         .message-content {
             color: #2D3748; /* لون النص في الوضع العادي */
         }
-        .dark .message-content {
-            color: #E2E8F0; /* لون النص في الوضع الداكن - أفتح للحصول على تباين أفضل */
-        }
+
 
     </style>
 </head>
-<body class="bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white font-tajawal">
+<body class="bg-gray-100 text-gray-900 font-tajawal">
     <!-- شريط التقدم للتحميل -->
     <div id="progress-bar" class="progress-bar"></div>
 
     <div class="min-h-screen flex flex-col">
-        <header class="bg-primary-600 dark:bg-primary-800 p-4 shadow-md relative">
+        <header class="bg-primary-600 p-4 shadow-md relative">
             <div class="flex justify-between items-center">
                 <div class="flex-1 flex items-center">
-                    <button id="darkModeToggle" class="dark-mode-toggle mr-2 text-white hover:text-yellow-300 transition-all p-2 rounded-full" title="تبديل الوضع الداكن" aria-label="تبديل الوضع الداكن">
-                        <i class="fas fa-moon"></i>
-                    </button>
                     <button id="helpButton" class="dark-mode-toggle mr-2 text-white hover:text-green-300 transition-all p-2 rounded-full" title="المساعدة" aria-label="عرض المساعدة">
                         <i class="fas fa-question-circle"></i>
                     </button>
@@ -411,25 +402,25 @@
 
         <main class="flex-1 p-4 container mx-auto max-w-4xl">
             <!-- حاوية المحادثة -->
-            <div id="chat-messages-container" class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4 mb-4 overflow-y-auto border border-gray-200 dark:border-gray-700 min-h-[300px] transition-all duration-300">
+            <div id="chat-messages-container" class="bg-white rounded-lg shadow-lg p-4 mb-4 overflow-y-auto border border-gray-200 border-gray-700 min-h-[300px] transition-all duration-300">
                 <div id="chat" class="space-y-4"></div>
             </div>
 
             <!-- شريط الإدخال -->
             <div class="input-bar flex items-center gap-2 mb-4">
                 <div class="relative flex-1">
-                    <input type="text" id="topicInput" class="block w-full px-4 py-3 bg-white dark:bg-gray-700 text-gray-900 dark:text-white border border-gray-300 dark:border-gray-600 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 pr-12 transition-colors" placeholder="أدخل موضوعًا سياسيًا للنقاش..." aria-label="موضوع النقاش">
-                    <button id="sendButton" class="absolute left-2 top-1/2 transform -translate-y-1/2 text-blue-500 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 transition-all hover:scale-110" title="إرسال (Alt+S)" aria-label="إرسال الموضوع">
+                    <input type="text" id="topicInput" class="block w-full px-4 py-3 bg-white text-gray-900 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 pr-12 transition-colors" placeholder="أدخل موضوعًا سياسيًا للنقاش..." aria-label="موضوع النقاش">
+                    <button id="sendButton" class="absolute left-2 top-1/2 transform -translate-y-1/2 text-blue-500 hover:text-blue-700 transition-all hover:scale-110" title="إرسال (Alt+S)" aria-label="إرسال الموضوع">
                         <i class="fas fa-paper-plane"></i>
                     </button>
-                    <button id="suggestionsButton" class="absolute left-10 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 transition-all hover:scale-110" title="عرض المواضيع المقترحة" aria-label="عرض المواضيع المقترحة">
+                    <button id="suggestionsButton" class="absolute left-10 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 transition-all hover:scale-110" title="عرض المواضيع المقترحة" aria-label="عرض المواضيع المقترحة">
                         <i class="fas fa-lightbulb"></i>
                     </button>
                 </div>
             </div>
 
             <!-- عرض المواضيع المقترحة -->
-            <div id="topic-suggestions" class="topic-suggestions hidden bg-white dark:bg-gray-700 p-3 rounded-lg shadow-md mb-4 transition-all duration-300"></div>
+            <div id="topic-suggestions" class="topic-suggestions hidden bg-white p-3 rounded-lg shadow-md mb-4 transition-all duration-300"></div>
 
             <!-- مؤشر الشخصيات النشطة -->
             <div id="active-characters" class="flex items-center justify-center mt-2 mb-4 flex-wrap gap-2 hidden transition-all duration-300"></div>
@@ -440,7 +431,7 @@
             </div>
         </main>
 
-        <footer class="bg-gray-200 dark:bg-gray-800 p-4 text-center text-gray-700 dark:text-gray-300 border-t border-gray-300 dark:border-gray-700">
+        <footer class="bg-gray-200 p-4 text-center text-gray-700 border-t border-gray-300">
             <div class="max-w-4xl mx-auto">
                 <p class="text-sm font-medium">
                     <strong>المشروع:</strong> منصة الحوار السياسي التفاعلية
@@ -451,7 +442,7 @@
                 <p class="text-sm">
                     <strong>المطور:</strong> الياس خضر خلف - المرحلة الأولى
                 </p>
-                <p class="text-xs mt-2 text-gray-500 dark:text-gray-400">
+                <p class="text-xs mt-2 text-gray-500">
                     الإصدار 2.0 - تم التحديث في مارس 2025
                 </p>
             </div>
@@ -462,33 +453,33 @@
     <div id="help-panel" class="help-panel">
         <div class="flex justify-between items-center mb-4">
             <h3 class="text-lg font-bold">دليل المستخدم</h3>
-            <button id="close-help" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300">
+            <button id="close-help" class="text-gray-500 hover:text-gray-700">
                 <i class="fas fa-times"></i>
             </button>
         </div>
         <div class="help-content space-y-4">
-            <div class="bg-blue-50 dark:bg-blue-900/30 p-4 rounded-lg">
-                <h4 class="font-bold mb-2 text-blue-700 dark:text-blue-300">كيفية البدء</h4>
-                <ol class="list-decimal list-inside space-y-2 text-gray-700 dark:text-gray-300">
+            <div class="bg-blue-50 p-4 rounded-lg">
+                <h4 class="font-bold mb-2 text-blue-700">كيفية البدء</h4>
+                <ol class="list-decimal list-inside space-y-2 text-gray-700">
                     <li>أدخل موضوعاً سياسياً في حقل النص أعلى مربع الدردشة.</li>
                     <li>اختر شخصية واحدة من الشخصيات المتاحة بالأسفل للرد على موضوعك.</li>
                     <li>أو انقر على زر "الكل" للحصول على ردود من جميع الشخصيات في وقت واحد.</li>
                 </ol>
             </div>
 
-            <div class="bg-green-50 dark:bg-green-900/30 p-4 rounded-lg">
-                <h4 class="font-bold mb-2 text-green-700 dark:text-green-300">الشخصيات</h4>
-                <ul class="list-disc list-inside space-y-2 text-gray-700 dark:text-gray-300">
-                    <li><strong class="text-green-600 dark:text-green-400">المحلل:</strong> يقدم تحليل موضوعي وعميق للقضايا السياسية.</li>
-                    <li><strong class="text-purple-600 dark:text-purple-400">المبدع:</strong> يطرح أفكاراً مبتكرة وحلولاً إبداعية للمشاكل السياسية.</li>
-                    <li><strong class="text-yellow-600 dark:text-yellow-400">الساخر:</strong> يعلق بأسلوب ساخر وفكاهي على الأحداث السياسية.</li>
-                    <li><strong class="text-red-600 dark:text-red-400">الناقد:</strong> يقدم نقداً بناءً ويكشف نقاط الضعف في الآراء والسياسات المطروحة.</li>
+            <div class="bg-green-50 p-4 rounded-lg">
+                <h4 class="font-bold mb-2 text-green-700">الشخصيات</h4>
+                <ul class="list-disc list-inside space-y-2 text-gray-700">
+                    <li><strong class="text-green-600">المحلل:</strong> يقدم تحليل موضوعي وعميق للقضايا السياسية.</li>
+                    <li><strong class="text-purple-600">المبدع:</strong> يطرح أفكاراً مبتكرة وحلولاً إبداعية للمشاكل السياسية.</li>
+                    <li><strong class="text-yellow-600">الساخر:</strong> يعلق بأسلوب ساخر وفكاهي على الأحداث السياسية.</li>
+                    <li><strong class="text-red-600">الناقد:</strong> يقدم نقداً بناءً ويكشف نقاط الضعف في الآراء والسياسات المطروحة.</li>
                 </ul>
             </div>
 
-            <div class="bg-purple-50 dark:bg-purple-900/30 p-4 rounded-lg">
-                <h4 class="font-bold mb-2 text-purple-700 dark:text-purple-300">المميزات الأساسية</h4>
-                <ul class="list-disc list-inside space-y-2 text-gray-700 dark:text-gray-300">
+            <div class="bg-purple-50 p-4 rounded-lg">
+                <h4 class="font-bold mb-2 text-purple-700">المميزات الأساسية</h4>
+                <ul class="list-disc list-inside space-y-2 text-gray-700">
                     <li><strong>تصدير المحادثة:</strong> يمكنك تصدير المحادثة الحالية بالكامل إلى ملف PDF.</li>
                     <li><strong>مقترحات للمواضيع:</strong> يقترح النظام مواضيع سياسية متنوعة لبدء الحوار.</li>
                     <li><strong>نسخ الردود:</strong> يمكنك بسهولة نسخ أي رد بنقرة واحدة لغرض المشاركة أو الحفظ.</li>
