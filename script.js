@@ -901,7 +901,7 @@ async function getResponse(character, shouldRespond = true) {
         updateProgressBar(30);
 
         const response = await axios.post(
-            `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKeys[character]}`,
+            `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKeys[character]}`,
             {
                 contents: [{ role: "user", parts: [{ text: currentTopic }] }],
                 systemInstruction: { parts: [{ text: prompts[character] }] },
